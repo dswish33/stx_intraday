@@ -3,4 +3,4 @@ Quick analysis of intraday momentum effects on the last 30 minutes of NY trading
 
 
 Note:
-Not finished. Other projects have much more promise. Barrier of entry to hft/mft for stocks makes me put any other analysis on this topic on the backburner.
+Not finished. Barrier of entry to hft/mft for stocks makes me assign a lower priority to this topic.
