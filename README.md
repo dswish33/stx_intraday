@@ -3,4 +3,4 @@ Quick analysis of intraday momentum effects on last 30 minutes of NY trading ses
 
 
 Note:
-Busy with other projects that have much more promise. Lack of attainable alpha as well as the barrier of entry to hft/mft for stocks makes me put any other analysis on this topic on the backburner.
+Other projects have much more promise. Lack of attainable alpha as well as the barrier of entry to hft/mft for stocks makes me put any other analysis on this topic on the backburner.
