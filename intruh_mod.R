@@ -7,7 +7,7 @@ library(boot)
 
 
 
-key = c("G8Y1XWFZLF17O3E8")
+key = c("")
 
 get_ohlc <- function(symbol){
 
