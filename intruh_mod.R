@@ -104,7 +104,7 @@ get_mod <- function(symbol){
                      
 qqq <- get_mod("QQQ")
 qqq_sum <- summary(qqq)
-#fn to plot adj. R^2, change asset below to view others            
+#fn to plot adj. R^2 vs. the # of predictors, change asset below to view others            
 plot(qqq_sum$adjr2 , xlab = "Number of Variables", ylab = "Adjusted RSq", type = "l")
 
 
