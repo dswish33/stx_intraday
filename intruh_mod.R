@@ -6,7 +6,6 @@ library(boot)
 #library(zoo)
 
 
-
 key = c("")
 
 get_ohlc <- function(symbol){
@@ -25,35 +24,35 @@ get_mod <- function(symbol){
   a <- cbind(timeseries = rownames(a), a)
   rownames(a) <- 1:nrow(a)
   
-  #y_t
+  #y_t => the returns during last 30 minutes of live trading session
   end_of_day_opens = a[grepl("15:30:00", a$timeseries, fixed = TRUE), "open"]
   end_of_day_closes = a[grepl("15:30:00", a$timeseries, fixed = TRUE), "close"]
   y_t = (end_of_day_closes - end_of_day_opens)/end_of_day_opens
   #don't need first day
   y_t = y_t[-(1)]
   
-  #rod
+  #rod => returns for rest of the live trading day
   rest_of_day_closes = a[grepl("15:00:00", a$timeseries, fixed = TRUE), "close"]
   rest_of_day_opens = a[grepl("9:30:00", a$timeseries, fixed = TRUE) & !grepl("19:30:00", a$timeseries, fixed = TRUE), "open"]
   rest_of_day_returns = (rest_of_day_closes - rest_of_day_opens)/rest_of_day_opens
   #don't need first day
   rest_of_day_returns = rest_of_day_returns[-(1)]
   
-  #post_mark
+  #post_mark => post market returns (for previous day, hence why we shifted the data)
   post_mark_A = a[grepl("16:00:00", a$timeseries, fixed = TRUE), "open"]
   post_mark_B = a[grepl("19:30:00", a$timeseries, fixed = TRUE), "close"]
   post_mark_returns = (post_mark_B - post_mark_A)/post_mark_A
   #don't need last day
   post_mark_returns = post_mark_returns[-(length(post_mark_returns))]
   
-  #pre_mark
+  #pre_mark => pre market returns for current day
   pre_mark_A = a[grepl("19:30:00", a$timeseries, fixed = TRUE), "close"]
   pre_mark_A = pre_mark_A[-(length(pre_mark_A))] #gets rid of last item
   pre_mark_B = a[grepl("9:00:00", a$timeseries, fixed = TRUE) & !grepl("19:00:00", a$timeseries, fixed = TRUE), "close"]
   pre_mark_B = pre_mark_B[-(1)] #gets rid of first item, this aligns the two arrays
   pre_mark_returns = (pre_mark_B - pre_mark_A)/pre_mark_A
   
-  #open_volu
+  #open_volu => asset trading volume during market open
   volume_at_open = a[grepl("9:30:00", a$timeseries, fixed = TRUE) & !grepl("19:30:00", a$timeseries, fixed = TRUE), "volume"]
   #don't need first day
   volume_at_open = volume_at_open[-(1)]
@@ -62,12 +61,12 @@ get_mod <- function(symbol){
   day_cands_volu = a[str_detect(a$timeseries, "10:00:00|10:30:00|11:00:00|11:30:00|12:00:00|12:30:00|13:00:00|13:30:00|14:00:00|14:30:00|15:00:00"), "volume"]
   cands_to_sum = 11
   
-  #pre_mark_volu --> from 4:00 open to 9:00 close
+  #pre_mark_volu --> asset volume during premarket, i.e. from 4:00 open to 9:00 close
   #don't need first day
   pre_mark_volu <- sapply(seq(1, length(pre_mark_cands_volu), by = cands_to_sum), function(i) sum(pre_mark_cands_volu[i:min(i + cands_to_sum - 1, length(pre_mark_cands_volu))]))
   pre_mark_volu = pre_mark_volu[-(1)]
   
-  #volu_for_day --> from 10:00 open to 15:00 close
+  #volu_for_day --> asset volume during the live trading session, i.e. from 10:00 open to 15:00 close
   #don't need first day
   day_volu <- sapply(seq(1, length(day_cands_volu), by = cands_to_sum), function(i) sum(day_cands_volu[i:min(i + cands_to_sum - 1, length(day_cands_volu))]))
   day_volu = day_volu[-(1)]
@@ -101,10 +100,16 @@ get_mod <- function(symbol){
   
 }
 
+
+                     
 qqq <- get_mod("QQQ")
 qqq_sum <- summary(qqq)
-#plot(qqq_sum$adjr2 , xlab = "Number of Variables", ylab = "Adjusted RSq", type = "l")
+#fn to plot adj. R^2, change asset below to view others            
+plot(qqq_sum$adjr2 , xlab = "Number of Variables", ylab = "Adjusted RSq", type = "l")
 
+
+
+#other assets....                  
 nvda <- get_mod("NVDA")
 nvda_sum <- summary(nvda)
 
@@ -125,3 +130,5 @@ msft_sum <- summary(msft)
 
 avgo <- get_mod("AVGO")
 avgo_sum <- summary(avgo)
+
+
